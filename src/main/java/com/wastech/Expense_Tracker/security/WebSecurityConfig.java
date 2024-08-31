@@ -1,6 +1,8 @@
 package com.wastech.Expense_Tracker.security;
 
 
+import com.wastech.Expense_Tracker.model.AppRole;
+import com.wastech.Expense_Tracker.model.Role;
 import com.wastech.Expense_Tracker.model.User;
 import com.wastech.Expense_Tracker.security.jwt.AuthEntryPointJwt;
 import com.wastech.Expense_Tracker.security.jwt.AuthTokenFilter;
@@ -9,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import com.wastech.Expense_Tracker.repositories.RoleRepository;
+import com.wastech.Expense_Tracker.repositories.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;

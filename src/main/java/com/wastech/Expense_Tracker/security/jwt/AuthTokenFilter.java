@@ -1,6 +1,6 @@
 package com.wastech.Expense_Tracker.security.jwt;
-package com.wastech.Expense_Tracker.security.services.UserDetailsServiceImpl;
 
+import com.wastech.Expense_Tracker.security.services.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

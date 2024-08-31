@@ -1,5 +1,7 @@
 package com.wastech.Expense_Tracker.repositories;
 
+
+
 import com.wastech.Expense_Tracker.model.AppRole;
 import com.wastech.Expense_Tracker.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
