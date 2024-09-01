@@ -6,7 +6,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -64,7 +66,7 @@ public class User {
     @Setter
     @Getter
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Income> incomes = new HashSet<>();
+    private List<Income> incomes = new ArrayList<>();
 
     @Setter
     @Getter
