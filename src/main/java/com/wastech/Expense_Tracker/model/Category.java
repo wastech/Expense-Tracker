@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity(name = "categories")
@@ -25,6 +27,13 @@ public class Category {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
+
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Expense> expenses = new HashSet<>();
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Budget> budgets = new HashSet<>();
 
     @PrePersist
     protected void onCreate() {
