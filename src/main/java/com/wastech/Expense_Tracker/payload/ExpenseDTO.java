@@ -5,19 +5,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExpenseDTO {
-
     private Long expenseId;
     private Long userId;
     private Long categoryId;
     private BigDecimal amount;
     private String description;
-    private Date date;
-    private Date createdAt;
-    private Date updatedAt;
+    private LocalDate date;
+    private LocalDate  createdAt;
+    private LocalDate  updatedAt;
 }
