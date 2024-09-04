@@ -25,6 +25,7 @@ public class BudgetController {
         return budgetService.createBudget(budgetDTO, user);
     }
 
+
     @GetMapping
     public List<BudgetDTO> getBudgets() {
         return budgetService.getBudgets();
