@@ -7,8 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -25,12 +27,15 @@ public class Category {
     @Size(min = 5, message = "Category name must contain atleast 5 characters")
     private String categoryName;
 
+    @Column(name = "amount", nullable = false)
+    private BigDecimal amount;
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Expense> expenses = new HashSet<>();
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    private List<Expense> expenses;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Budget> budgets = new HashSet<>();

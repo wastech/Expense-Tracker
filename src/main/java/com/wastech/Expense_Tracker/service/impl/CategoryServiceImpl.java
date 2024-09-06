@@ -3,9 +3,12 @@ package com.wastech.Expense_Tracker.service.impl;
 import com.wastech.Expense_Tracker.exceptions.APIException;
 import com.wastech.Expense_Tracker.exceptions.ResourceNotFoundException;
 import com.wastech.Expense_Tracker.model.Category;
+import com.wastech.Expense_Tracker.model.Expense;
+import com.wastech.Expense_Tracker.model.User;
 import com.wastech.Expense_Tracker.payload.CategoryDTO;
 import com.wastech.Expense_Tracker.payload.CategoryResponse;
 import com.wastech.Expense_Tracker.repositories.CategoryRepository;
+import com.wastech.Expense_Tracker.repositories.ExpenseRepository;
 import com.wastech.Expense_Tracker.service.CategoryService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +18,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -24,6 +32,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private ExpenseRepository expenseRepository;
     @Autowired
     private ModelMapper modelMapper;
 
@@ -89,5 +99,33 @@ public class CategoryServiceImpl implements CategoryService {
         category.setCategoryId(categoryId);
         savedCategory = categoryRepository.save(category);
         return modelMapper.map(savedCategory, CategoryDTO.class);
+    }
+
+    public List<CategoryDTO> getMonthlyCategoryExpenses(User user, LocalDate startDate, LocalDate endDate) {
+        List<Expense> expenses = expenseRepository.findByUserAndDateBetween(user, startDate, endDate);
+
+        // Group expenses by category and map to CategoryDTO
+        Map<Long, List<Expense>> groupedByCategory = expenses.stream()
+            .collect(Collectors.groupingBy(expense -> expense.getCategory().getCategoryId()));
+
+        // Create a list of CategoryDTO
+        List<CategoryDTO> result = new ArrayList<>();
+
+        groupedByCategory.forEach((categoryId, expenseList) -> {
+            Expense firstExpense = expenseList.getFirst();
+            BigDecimal totalAmount = expenseList.stream()
+                .map(Expense::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            // Create and add the CategoryDTO
+            result.add(new CategoryDTO(
+                categoryId,
+                firstExpense.getCategory().getCategoryName(),
+                totalAmount,
+                firstExpense.getCategory().getCreatedAt()
+            ));
+        });
+
+        return result;
     }
 }

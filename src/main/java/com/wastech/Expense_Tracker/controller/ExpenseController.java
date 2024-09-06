@@ -1,15 +1,20 @@
 package com.wastech.Expense_Tracker.controller;
 
 import com.wastech.Expense_Tracker.model.User;
+import com.wastech.Expense_Tracker.payload.APIResponse;
 import com.wastech.Expense_Tracker.payload.ExpenseDTO;
 import com.wastech.Expense_Tracker.service.ExpenseService;
 import com.wastech.Expense_Tracker.util.AuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/expenses")
@@ -31,6 +36,8 @@ public class ExpenseController {
         List<ExpenseDTO> expenses = expenseService.getExpenses();
         return new ResponseEntity<>(expenses, HttpStatus.OK);
     }
+
+
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<ExpenseDTO>> getUserExpenses(@PathVariable Long userId) {
@@ -56,5 +63,19 @@ public class ExpenseController {
     public ResponseEntity<String> deleteExpenseById(@PathVariable Long id) {
         String response = expenseService.deleteIncomeById(id);  // Should be deleteExpenseById method in service
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/monthly-total-expenses")
+    public ResponseEntity<BigDecimal> getTotalExpensesForMonth(
+        @AuthenticationPrincipal User user,
+        @RequestParam int year,
+        @RequestParam int month) {
+
+        LocalDate startDate = LocalDate.of(year, month, 1);
+        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+
+        BigDecimal totalExpenses = expenseService.getTotalExpensesForMonth(user, startDate, endDate);
+
+        return ResponseEntity.ok(totalExpenses);
     }
 }

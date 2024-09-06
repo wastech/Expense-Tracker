@@ -1,6 +1,7 @@
 package com.wastech.Expense_Tracker.controller;
 
 import com.wastech.Expense_Tracker.config.AppConstants;
+import com.wastech.Expense_Tracker.model.User;
 import com.wastech.Expense_Tracker.payload.CategoryDTO;
 import com.wastech.Expense_Tracker.payload.CategoryResponse;
 import com.wastech.Expense_Tracker.service.CategoryService;
@@ -8,7 +9,11 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -51,5 +56,19 @@ public class CategoryController {
                                                       @PathVariable Long categoryId){
         CategoryDTO savedCategoryDTO = categoryService.updateCategory(categoryDTO, categoryId);
         return new ResponseEntity<>(savedCategoryDTO, HttpStatus.OK);
+    }
+
+    @GetMapping("/monthly-category-expenses")
+    public ResponseEntity<List<CategoryDTO>> getMonthlyCategoryExpenses(
+        @AuthenticationPrincipal User user,
+        @RequestParam int year,
+        @RequestParam int month) {
+
+        LocalDate startDate = LocalDate.of(year, month, 1);
+        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+
+        List<CategoryDTO> categoryExpenses = categoryService.getMonthlyCategoryExpenses(user, startDate, endDate);
+
+        return ResponseEntity.ok(categoryExpenses);
     }
 }
