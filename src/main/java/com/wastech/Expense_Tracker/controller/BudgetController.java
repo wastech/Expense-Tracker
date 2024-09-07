@@ -3,11 +3,16 @@ package com.wastech.Expense_Tracker.controller;
 import com.wastech.Expense_Tracker.payload.BudgetDTO;
 import com.wastech.Expense_Tracker.model.User;
 import com.wastech.Expense_Tracker.service.BudgetService;
+import com.wastech.Expense_Tracker.service.ExpenseService;
 import com.wastech.Expense_Tracker.util.AuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/budgets")
@@ -17,6 +22,9 @@ public class BudgetController {
 
     @Autowired
     private BudgetService budgetService;
+
+    @Autowired
+    private ExpenseService expenseService;
 
     @PostMapping
     public BudgetDTO createBudget(@RequestBody BudgetDTO budgetDTO, @RequestParam Long userId) {
@@ -51,6 +59,20 @@ public class BudgetController {
     @PutMapping("/{id}")
     public BudgetDTO updateBudgetById(@PathVariable Long id, @RequestBody BudgetDTO budgetDTO) {
         return budgetService.updateBudgetById(id, budgetDTO);
+    }
+
+    @GetMapping("/monthly-category-expenses")
+    public ResponseEntity<Map<String, Object>> getMonthlyCategoryExpensesWithBudget(
+        @AuthenticationPrincipal User user,
+        @RequestParam int year,
+        @RequestParam int month) {
+
+        LocalDate startDate = LocalDate.of(year, month, 1);
+        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+
+        Map<String, Object> response = expenseService.calculateMonthlyCategoryExpensesWithBudget(user, startDate, endDate);
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")

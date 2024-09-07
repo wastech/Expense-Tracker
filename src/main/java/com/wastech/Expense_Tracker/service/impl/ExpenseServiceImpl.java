@@ -6,9 +6,11 @@ import com.wastech.Expense_Tracker.model.Expense;
 import com.wastech.Expense_Tracker.model.User;
 import com.wastech.Expense_Tracker.payload.CategoryDTO;
 import com.wastech.Expense_Tracker.payload.ExpenseDTO;
+import com.wastech.Expense_Tracker.repositories.BudgetRepository;
 import com.wastech.Expense_Tracker.repositories.CategoryRepository;
 import com.wastech.Expense_Tracker.repositories.ExpenseRepository;
 import com.wastech.Expense_Tracker.repositories.UserRepository;
+import com.wastech.Expense_Tracker.service.BudgetService;
 import com.wastech.Expense_Tracker.service.ExpenseService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -16,8 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,6 +39,9 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Autowired
     private final CategoryRepository categoryRepository;
+
+    @Autowired
+    private BudgetRepository budgetRepository;
 
     @Autowired
     private final ModelMapper modelMapper;
@@ -113,6 +120,58 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
 
+    public Map<String, Object> calculateMonthlyCategoryExpensesWithBudget(User user, LocalDate startDate, LocalDate endDate) {
+        // Get the monthly budget for the user
+        Budget budget = budgetRepository.findByUserAndStartDateAndEndDate(user, startDate, endDate)
+            .orElseThrow(() -> new RuntimeException("No budget found for this period"));
 
+        BigDecimal totalBudget = budget.getAmount();
+
+        // Get total expenses for the month
+        List<Expense> expenses = expenseRepository.findByUserAndDateBetween(user, startDate, endDate);
+
+        // Group expenses by category
+        Map<Long, List<Expense>> expensesByCategory = expenses.stream()
+            .collect(Collectors.groupingBy(expense -> expense.getCategory().getCategoryId()));
+
+        // Initialize the result
+        Map<String, Object> result = new HashMap<>();
+        BigDecimal totalExpenses = BigDecimal.ZERO;
+
+        List<Map<String, Object>> categoryExpensesList = new ArrayList<>();
+
+        // Calculate total expenses and percentage for each category
+        for (Map.Entry<Long, List<Expense>> entry : expensesByCategory.entrySet()) {
+            Long categoryId = entry.getKey();
+            List<Expense> categoryExpenses = entry.getValue();
+            BigDecimal categoryTotal = categoryExpenses.stream()
+                .map(Expense::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            // Calculate percentage of this category's expenses relative to the total budget
+            BigDecimal percentage = categoryTotal.divide(totalBudget, 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100));
+
+            // Subtract the category's expenses from the total budget
+            totalExpenses = totalExpenses.add(categoryTotal);
+            BigDecimal remainingBudget = totalBudget.subtract(totalExpenses);
+
+            // Create category summary
+            Map<String, Object> categorySummary = new HashMap<>();
+            categorySummary.put("categoryId", categoryId);
+            categorySummary.put("categoryName", categoryExpenses.get(0).getCategory().getCategoryName());
+            categorySummary.put("amountSpent", categoryTotal);
+            categorySummary.put("percentage", percentage);
+            categorySummary.put("remainingBudget", remainingBudget);
+
+            categoryExpensesList.add(categorySummary);
+        }
+
+        result.put("totalBudget", totalBudget);
+        result.put("totalExpenses", totalExpenses);
+        result.put("remainingBudget", totalBudget.subtract(totalExpenses));
+        result.put("categoryExpenses", categoryExpensesList);
+
+        return result;
+    }
 
 }
