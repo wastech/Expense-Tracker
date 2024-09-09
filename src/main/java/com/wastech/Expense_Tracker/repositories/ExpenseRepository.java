@@ -17,10 +17,7 @@ import java.util.Map;
 @Repository
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     List<Expense> findByUser(User user);
-
     List<Expense> findByUserAndCategory(User user, Category category);
-
-
     @Query("SELECT e FROM Expense e WHERE e.user = :user AND e.date BETWEEN :startDate AND :endDate")
     List<Expense> findByUserAndDateBetween(@Param("user") User user,
                                            @Param("startDate") LocalDate startDate,

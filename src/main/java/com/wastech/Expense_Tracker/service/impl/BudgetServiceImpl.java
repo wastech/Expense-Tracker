@@ -42,8 +42,7 @@ public class BudgetServiceImpl implements BudgetService {
         Budget budget = modelMapper.map(budgetDTO, Budget.class);
         budget.setUser(user);
 
-        Category category = categoryRepository.findById(budgetDTO.getCategoryId())
-            .orElseThrow(() -> new ResourceNotFoundException("Category", "id", budgetDTO.getCategoryId()));
+        Category category = categoryRepository.findById(budgetDTO.getCategoryId()).orElseThrow(() -> new ResourceNotFoundException("Category", "id", budgetDTO.getCategoryId()));
         budget.setCategory(category);
 
         Budget savedBudget = budgetRepository.save(budget);
@@ -94,15 +93,12 @@ public class BudgetServiceImpl implements BudgetService {
     public List<BudgetDTO> getBudgets() {
         List<Budget> budgets = budgetRepository.findAll();
 
-        return budgets.stream()
-            .map(budget -> modelMapper.map(budget, BudgetDTO.class))
-            .collect(Collectors.toList());
+        return budgets.stream().map(budget -> modelMapper.map(budget, BudgetDTO.class)).collect(Collectors.toList());
     }
 
     @Override
     public BudgetDTO getBudgetById(Long budgetId) {
-        Budget budget = budgetRepository.findById(budgetId)
-            .orElseThrow(() -> new ResourceNotFoundException("Budget", "id", budgetId));
+        Budget budget = budgetRepository.findById(budgetId).orElseThrow(() -> new ResourceNotFoundException("Budget", "id", budgetId));
 
         return modelMapper.map(budget, BudgetDTO.class);
     }
@@ -111,53 +107,39 @@ public class BudgetServiceImpl implements BudgetService {
     public List<BudgetDTO> getUserBudgets(User user) {
         List<Budget> budgets = budgetRepository.findByUser(user);
 
-        return budgets.stream()
-            .map(budget -> modelMapper.map(budget, BudgetDTO.class))
-            .collect(Collectors.toList());
+        return budgets.stream().map(budget -> modelMapper.map(budget, BudgetDTO.class)).collect(Collectors.toList());
     }
 
     @Override
     public List<BudgetDTO> getBudgetsByUserAndCategory(User user, Long categoryId) {
-        Category category = categoryRepository.findById(categoryId)
-            .orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
 
         List<Budget> budgets = budgetRepository.findByUserAndCategory(user, category);
-
-        return budgets.stream()
-            .map(budget -> modelMapper.map(budget, BudgetDTO.class))
-            .collect(Collectors.toList());
+        return budgets.stream().map(budget -> modelMapper.map(budget, BudgetDTO.class)).collect(Collectors.toList());
     }
 
     @Override
     public BudgetDTO updateBudgetById(Long budgetId, BudgetDTO budgetDTO) {
-        Budget existingBudget = budgetRepository.findById(budgetId)
-            .orElseThrow(() -> new ResourceNotFoundException("Budget", "id", budgetId));
-
+        Budget existingBudget = budgetRepository.findById(budgetId).orElseThrow(() -> new ResourceNotFoundException("Budget", "id", budgetId));
         existingBudget.setAmount(budgetDTO.getAmount());
         existingBudget.setStartDate(budgetDTO.getStartDate());
         existingBudget.setEndDate(budgetDTO.getEndDate());
 
         if (budgetDTO.getCategoryId() != null) {
-            Category category = categoryRepository.findById(budgetDTO.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", budgetDTO.getCategoryId()));
+            Category category = categoryRepository.findById(budgetDTO.getCategoryId()).orElseThrow(() -> new ResourceNotFoundException("Category", "id", budgetDTO.getCategoryId()));
             existingBudget.setCategory(category);
         }
 
         Budget updatedBudget = budgetRepository.save(existingBudget);
-
         return modelMapper.map(updatedBudget, BudgetDTO.class);
     }
 
     @Override
     public String deleteBudgetById(Long budgetId) {
-        Budget budget = budgetRepository.findById(budgetId)
-            .orElseThrow(() -> new ResourceNotFoundException("Budget", "id", budgetId));
-
+        Budget budget = budgetRepository.findById(budgetId).orElseThrow(() -> new ResourceNotFoundException("Budget", "id", budgetId));
         budgetRepository.delete(budget);
-
         return "Budget with ID " + budgetId + " has been deleted successfully.";
     }
-
 
 
 }

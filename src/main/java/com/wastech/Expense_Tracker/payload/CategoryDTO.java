@@ -12,7 +12,6 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryDTO {
-
     private Long categoryId;
     private String categoryName;
     private BigDecimal amount;

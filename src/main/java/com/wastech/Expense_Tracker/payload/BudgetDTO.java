@@ -21,7 +21,6 @@ public class BudgetDTO {
     private LocalDate endDate;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
     private BigDecimal totalExpenses;
     private BigDecimal percentageSpent;
     private BigDecimal remainingBudget;

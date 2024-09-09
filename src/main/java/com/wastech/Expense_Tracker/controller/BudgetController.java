@@ -28,11 +28,9 @@ public class BudgetController {
 
     @PostMapping
     public BudgetDTO createBudget(@RequestBody BudgetDTO budgetDTO, @RequestParam Long userId) {
-
         User user = authUtil.loggedInUser();
         return budgetService.createBudget(budgetDTO, user);
     }
-
 
     @GetMapping
     public List<BudgetDTO> getBudgets() {
@@ -66,12 +64,9 @@ public class BudgetController {
         @AuthenticationPrincipal User user,
         @RequestParam int year,
         @RequestParam int month) {
-
         LocalDate startDate = LocalDate.of(year, month, 1);
         LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
-
         Map<String, Object> response = expenseService.calculateMonthlyCategoryExpensesWithBudget(user, startDate, endDate);
-
         return ResponseEntity.ok(response);
     }
 

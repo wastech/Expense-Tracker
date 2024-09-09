@@ -49,20 +49,15 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponse getAllCategories(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
-        Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
-            ? Sort.by(sortBy).ascending()
-            : Sort.by(sortBy).descending();
+        Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
 
         Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
         Page<Category> categoryPage = categoryRepository.findAll(pageDetails);
 
         List<Category> categories = categoryPage.getContent();
-        if (categories.isEmpty())
-            throw new APIException("No category created till now.");
+        if (categories.isEmpty()) throw new APIException("No category created till now.");
 
-        List<CategoryDTO> categoryDTOS = categories.stream()
-            .map(category -> modelMapper.map(category, CategoryDTO.class))
-            .toList();
+        List<CategoryDTO> categoryDTOS = categories.stream().map(category -> modelMapper.map(category, CategoryDTO.class)).toList();
 
         CategoryResponse categoryResponse = new CategoryResponse();
         categoryResponse.setContent(categoryDTOS);
@@ -76,15 +71,13 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDTO getCategoryById(Long categoryId) {
-        Category category = categoryRepository.findById(categoryId)
-            .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
         return modelMapper.map(category, CategoryDTO.class);
     }
 
     @Override
     public CategoryDTO deleteCategory(Long categoryId) {
-        Category category = categoryRepository.findById(categoryId)
-            .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
 
         categoryRepository.delete(category);
         return modelMapper.map(category, CategoryDTO.class);
@@ -92,8 +85,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDTO updateCategory(CategoryDTO categoryDTO, Long categoryId) {
-        Category savedCategory = categoryRepository.findById(categoryId)
-            .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
+        Category savedCategory = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
 
         Category category = modelMapper.map(categoryDTO, Category.class);
         category.setCategoryId(categoryId);
@@ -105,25 +97,17 @@ public class CategoryServiceImpl implements CategoryService {
         List<Expense> expenses = expenseRepository.findByUserAndDateBetween(user, startDate, endDate);
 
         // Group expenses by category and map to CategoryDTO
-        Map<Long, List<Expense>> groupedByCategory = expenses.stream()
-            .collect(Collectors.groupingBy(expense -> expense.getCategory().getCategoryId()));
+        Map<Long, List<Expense>> groupedByCategory = expenses.stream().collect(Collectors.groupingBy(expense -> expense.getCategory().getCategoryId()));
 
         // Create a list of CategoryDTO
         List<CategoryDTO> result = new ArrayList<>();
 
         groupedByCategory.forEach((categoryId, expenseList) -> {
             Expense firstExpense = expenseList.getFirst();
-            BigDecimal totalAmount = expenseList.stream()
-                .map(Expense::getAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+            BigDecimal totalAmount = expenseList.stream().map(Expense::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
 
             // Create and add the CategoryDTO
-            result.add(new CategoryDTO(
-                categoryId,
-                firstExpense.getCategory().getCategoryName(),
-                totalAmount,
-                firstExpense.getCategory().getCreatedAt()
-            ));
+            result.add(new CategoryDTO(categoryId, firstExpense.getCategory().getCategoryName(), totalAmount, firstExpense.getCategory().getCreatedAt()));
         });
 
         return result;

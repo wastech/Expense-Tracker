@@ -30,26 +30,22 @@ public class CategoryController {
         CategoryResponse categoryResponse = categoryService.getAllCategories(pageNumber, pageSize, sortBy, sortOrder);
         return new ResponseEntity<>(categoryResponse, HttpStatus.OK);
     }
-
     @PostMapping("/public/categories")
     public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryDTO categoryDTO){
         CategoryDTO savedCategoryDTO = categoryService.createCategory(categoryDTO);
         return new ResponseEntity<>(savedCategoryDTO, HttpStatus.CREATED);
     }
-
     @GetMapping("/admin/categories/{categoryId}")
     public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long categoryId){
         CategoryDTO savedCategory = categoryService.getCategoryById(categoryId);
         return new ResponseEntity<>(savedCategory, HttpStatus.OK);
     }
 
-
     @DeleteMapping("/admin/categories/{categoryId}")
     public ResponseEntity<CategoryDTO> deleteCategory(@PathVariable Long categoryId){
         CategoryDTO deletedCategory = categoryService.deleteCategory(categoryId);
         return new ResponseEntity<>(deletedCategory, HttpStatus.OK);
     }
-
 
     @PutMapping("/public/categories/{categoryId}")
     public ResponseEntity<CategoryDTO> updateCategory(@Valid @RequestBody CategoryDTO categoryDTO,
@@ -63,12 +59,9 @@ public class CategoryController {
         @AuthenticationPrincipal User user,
         @RequestParam int year,
         @RequestParam int month) {
-
         LocalDate startDate = LocalDate.of(year, month, 1);
         LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
-
         List<CategoryDTO> categoryExpenses = categoryService.getMonthlyCategoryExpenses(user, startDate, endDate);
-
         return ResponseEntity.ok(categoryExpenses);
     }
 }

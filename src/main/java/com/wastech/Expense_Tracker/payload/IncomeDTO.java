@@ -11,7 +11,6 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class IncomeDTO {
-
     private Long incomeId;
     private String source;
     private BigDecimal amount;
