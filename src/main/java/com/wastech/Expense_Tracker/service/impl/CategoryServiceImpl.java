@@ -96,17 +96,11 @@ public class CategoryServiceImpl implements CategoryService {
     public List<CategoryDTO> getMonthlyCategoryExpenses(User user, LocalDate startDate, LocalDate endDate) {
         List<Expense> expenses = expenseRepository.findByUserAndDateBetween(user, startDate, endDate);
 
-        // Group expenses by category and map to CategoryDTO
         Map<Long, List<Expense>> groupedByCategory = expenses.stream().collect(Collectors.groupingBy(expense -> expense.getCategory().getCategoryId()));
-
-        // Create a list of CategoryDTO
         List<CategoryDTO> result = new ArrayList<>();
-
         groupedByCategory.forEach((categoryId, expenseList) -> {
             Expense firstExpense = expenseList.getFirst();
             BigDecimal totalAmount = expenseList.stream().map(Expense::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
-
-            // Create and add the CategoryDTO
             result.add(new CategoryDTO(categoryId, firstExpense.getCategory().getCategoryName(), totalAmount, firstExpense.getCategory().getCreatedAt()));
         });
 
