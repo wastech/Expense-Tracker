@@ -63,9 +63,7 @@ public class IncomeServiceImpl implements IncomeService {
         incomeFromDatabase.setSource(incomeDTO.getSource());
         incomeFromDatabase.setAmount(incomeDTO.getAmount());
         incomeFromDatabase.setDescription(incomeDTO.getDescription());
-
         Income updatedIncome = incomeRepository.save(incomeFromDatabase);
-
         User user = incomeFromDatabase.getUser();
         user.getIncomes().removeIf(income -> income.getIncomeId().equals(incomeId));
         user.getIncomes().add(updatedIncome);
@@ -79,12 +77,9 @@ public class IncomeServiceImpl implements IncomeService {
     public String deleteIncomeById(Long incomeId) {
         Income incomeFromDatabase = incomeRepository.findById(incomeId)
             .orElseThrow(() -> new ResourceNotFoundException("Income", "incomeId", incomeId));
-
         User user = incomeFromDatabase.getUser();
-
         user.getIncomes().removeIf(address -> address.getIncomeId().equals(incomeId));
         userRepository.save(user);
-
         incomeRepository.delete(incomeFromDatabase);
 
         return "Income deleted successfully with incomeId: " + incomeId;

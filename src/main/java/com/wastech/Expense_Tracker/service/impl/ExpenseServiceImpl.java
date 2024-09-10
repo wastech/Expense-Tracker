@@ -121,26 +121,17 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 
     public Map<String, Object> calculateMonthlyCategoryExpensesWithBudget(User user, LocalDate startDate, LocalDate endDate) {
-        // Get the monthly budget for the user
         Budget budget = budgetRepository.findByUserAndStartDateAndEndDate(user, startDate, endDate)
             .orElseThrow(() -> new RuntimeException("No budget found for this period"));
 
         BigDecimal totalBudget = budget.getAmount();
-
-        // Get total expenses for the month
         List<Expense> expenses = expenseRepository.findByUserAndDateBetween(user, startDate, endDate);
-
-        // Group expenses by category
         Map<Long, List<Expense>> expensesByCategory = expenses.stream()
             .collect(Collectors.groupingBy(expense -> expense.getCategory().getCategoryId()));
-
-        // Initialize the result
         Map<String, Object> result = new HashMap<>();
         BigDecimal totalExpenses = BigDecimal.ZERO;
 
         List<Map<String, Object>> categoryExpensesList = new ArrayList<>();
-
-        // Calculate total expenses and percentage for each category
         for (Map.Entry<Long, List<Expense>> entry : expensesByCategory.entrySet()) {
             Long categoryId = entry.getKey();
             List<Expense> categoryExpenses = entry.getValue();
@@ -148,14 +139,10 @@ public class ExpenseServiceImpl implements ExpenseService {
                 .map(Expense::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-            // Calculate percentage of this category's expenses relative to the total budget
             BigDecimal percentage = categoryTotal.divide(totalBudget, 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100));
 
-            // Subtract the category's expenses from the total budget
             totalExpenses = totalExpenses.add(categoryTotal);
             BigDecimal remainingBudget = totalBudget.subtract(totalExpenses);
-
-            // Create category summary
             Map<String, Object> categorySummary = new HashMap<>();
             categorySummary.put("categoryId", categoryId);
             categorySummary.put("categoryName", categoryExpenses.get(0).getCategory().getCategoryName());
