@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: WASiu369
+      POSTGRES_DB: Expense_Tracker
+    ports:
+      - "5432:5432"
+
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      DATASOURCE_URL: jdbc:postgresql://database:5432/Expense_Tracker
+      DATASOURCE_USERNAME: postgres
+      DATASOURCE_PASSWORD: WASiu369
+      JWT_SECRET: mySecretKey123912738aopsgjnspkmndfsopkvajoirjg94gf2opfng2moknm
+    depends_on:
+      - database

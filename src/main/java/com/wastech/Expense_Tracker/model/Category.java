@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Set;
 
 @Data
-@Entity(name = "categories")
+@Entity
+@Table(name = "categories")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Category {
