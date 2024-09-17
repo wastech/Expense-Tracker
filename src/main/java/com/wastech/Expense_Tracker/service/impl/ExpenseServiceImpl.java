@@ -119,7 +119,12 @@ public class ExpenseServiceImpl implements ExpenseService {
         return "Expense deleted successfully";
     }
 
+    @Override
+    public List<Expense> getExpensesByUserAndDateBetween(User user, LocalDate startDate, LocalDate endDate) {
+        return expenseRepository.findByUserAndDateBetween(user, startDate, endDate);
+    }
 
+    @Override
     public Map<String, Object> calculateMonthlyCategoryExpensesWithBudget(User user, LocalDate startDate, LocalDate endDate) {
         Budget budget = budgetRepository.findByUserAndStartDateAndEndDate(user, startDate, endDate)
             .orElseThrow(() -> new RuntimeException("No budget found for this period"));
@@ -128,6 +133,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         List<Expense> expenses = expenseRepository.findByUserAndDateBetween(user, startDate, endDate);
         Map<Long, List<Expense>> expensesByCategory = expenses.stream()
             .collect(Collectors.groupingBy(expense -> expense.getCategory().getCategoryId()));
+
         Map<String, Object> result = new HashMap<>();
         BigDecimal totalExpenses = BigDecimal.ZERO;
 
@@ -139,10 +145,12 @@ public class ExpenseServiceImpl implements ExpenseService {
                 .map(Expense::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-            BigDecimal percentage = categoryTotal.divide(totalBudget, 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100));
+            BigDecimal percentage = categoryTotal.divide(totalBudget, 2, RoundingMode.HALF_UP)
+                .multiply(BigDecimal.valueOf(100));
 
             totalExpenses = totalExpenses.add(categoryTotal);
             BigDecimal remainingBudget = totalBudget.subtract(totalExpenses);
+
             Map<String, Object> categorySummary = new HashMap<>();
             categorySummary.put("categoryId", categoryId);
             categorySummary.put("categoryName", categoryExpenses.get(0).getCategory().getCategoryName());

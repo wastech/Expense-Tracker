@@ -27,11 +27,11 @@ public interface ExpenseService {
 
     BigDecimal getTotalExpensesForMonth(User user, LocalDate startDate, LocalDate endDate);
 
-//    List<Expense> getExpensesByUserAndDateBetween(User user, LocalDate startDate, LocalDate endDate);
+  List<Expense> getExpensesByUserAndDateBetween(User user, LocalDate startDate, LocalDate endDate);
 
 
-    // Method to calculate total monthly category expenses and compare with the budget
     Map<String, Object> calculateMonthlyCategoryExpensesWithBudget(User user, LocalDate startDate, LocalDate endDate);
+
 
     // Other expense-related methods, such as creating, updating, deleting expenses, etc.
 //    List<Map<String, Object>> getMonthlyCategoryExpenses(User user, LocalDate startDate, LocalDate endDate);

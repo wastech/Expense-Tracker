@@ -38,56 +38,56 @@ public class BudgetServiceImpl implements BudgetService {
     private CategoryRepository categoryRepository;
 
     @Override
-    public BudgetDTO createBudget(BudgetDTO budgetDTO, User user) {
-        Budget budget = modelMapper.map(budgetDTO, Budget.class);
-        budget.setUser(user);
-
-        Category category = categoryRepository.findById(budgetDTO.getCategoryId()).orElseThrow(() -> new ResourceNotFoundException("Category", "id", budgetDTO.getCategoryId()));
-        budget.setCategory(category);
-
-        Budget savedBudget = budgetRepository.save(budget);
-
-        return modelMapper.map(savedBudget, BudgetDTO.class);
-    }
-
-
-//
 //    public BudgetDTO createBudget(BudgetDTO budgetDTO, User user) {
 //        Budget budget = modelMapper.map(budgetDTO, Budget.class);
 //        budget.setUser(user);
 //
-//        Category category = categoryRepository.findById(budgetDTO.getCategoryId())
-//            .orElseThrow(() -> new ResourceNotFoundException("Category", "id", budgetDTO.getCategoryId()));
+//        Category category = categoryRepository.findById(budgetDTO.getCategoryId()).orElseThrow(() -> new ResourceNotFoundException("Category", "id", budgetDTO.getCategoryId()));
 //        budget.setCategory(category);
 //
 //        Budget savedBudget = budgetRepository.save(budget);
 //
-//        // Calculate total expenses for the budget period
-//        LocalDate startDate = budget.getStartDate();
-//        LocalDate endDate = budget.getEndDate();
-//        List<Expense> expenses = expenseService.getExpensesByUserAndDateBetween(user, startDate, endDate);
-//
-//        // Calculate the total expense for the category in the budget
-//        BigDecimal totalExpenses = expenses.stream()
-//            .filter(expense -> expense.getCategory().getCategoryId().equals(category.getCategoryId()))
-//            .map(Expense::getAmount)
-//            .reduce(BigDecimal.ZERO, BigDecimal::add);
-//
-//        // Calculate the percentage spent and remaining budget
-//        BigDecimal percentageSpent = savedBudget.getAmount().compareTo(BigDecimal.ZERO) > 0
-//            ? totalExpenses.divide(savedBudget.getAmount(), BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100))
-//            : BigDecimal.ZERO;
-//
-//        BigDecimal remainingBudget = savedBudget.getAmount().subtract(totalExpenses);
-//
-//        // Map the saved budget to DTO and add calculated information
-//        BudgetDTO savedBudgetDTO = modelMapper.map(savedBudget, BudgetDTO.class);
-//        savedBudgetDTO.setTotalExpenses(totalExpenses);
-//        savedBudgetDTO.setPercentageSpent(percentageSpent);
-//        savedBudgetDTO.setRemainingBudget(remainingBudget);
-//
-//        return savedBudgetDTO;
+//        return modelMapper.map(savedBudget, BudgetDTO.class);
 //    }
+
+
+
+    public BudgetDTO createBudget(BudgetDTO budgetDTO, User user) {
+        Budget budget = modelMapper.map(budgetDTO, Budget.class);
+        budget.setUser(user);
+
+        Category category = categoryRepository.findById(budgetDTO.getCategoryId())
+            .orElseThrow(() -> new ResourceNotFoundException("Category", "id", budgetDTO.getCategoryId()));
+        budget.setCategory(category);
+
+        Budget savedBudget = budgetRepository.save(budget);
+
+        // Calculate total expenses for the budget period
+        LocalDate startDate = budget.getStartDate();
+        LocalDate endDate = budget.getEndDate();
+        List<Expense> expenses = expenseService.getExpensesByUserAndDateBetween(user, startDate, endDate);
+
+        // Calculate the total expense for the category in the budget
+        BigDecimal totalExpenses = expenses.stream()
+            .filter(expense -> expense.getCategory().getCategoryId().equals(category.getCategoryId()))
+            .map(Expense::getAmount)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // Calculate the percentage spent and remaining budget
+        BigDecimal percentageSpent = savedBudget.getAmount().compareTo(BigDecimal.ZERO) > 0
+            ? totalExpenses.divide(savedBudget.getAmount(), BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100))
+            : BigDecimal.ZERO;
+
+        BigDecimal remainingBudget = savedBudget.getAmount().subtract(totalExpenses);
+
+        // Map the saved budget to DTO and add calculated information
+        BudgetDTO savedBudgetDTO = modelMapper.map(savedBudget, BudgetDTO.class);
+        savedBudgetDTO.setTotalExpenses(totalExpenses);
+        savedBudgetDTO.setPercentageSpent(percentageSpent);
+        savedBudgetDTO.setRemainingBudget(remainingBudget);
+
+        return savedBudgetDTO;
+    }
 
     @Override
     public List<BudgetDTO> getBudgets() {
