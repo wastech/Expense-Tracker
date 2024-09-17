@@ -33,8 +33,4 @@ public interface ExpenseService {
     Map<String, Object> calculateMonthlyCategoryExpensesWithBudget(User user, LocalDate startDate, LocalDate endDate);
 
 
-    // Other expense-related methods, such as creating, updating, deleting expenses, etc.
-//    List<Map<String, Object>> getMonthlyCategoryExpenses(User user, LocalDate startDate, LocalDate endDate);
-
-//    void createExpense(ExpenseDTO expenseDTO);
 }
