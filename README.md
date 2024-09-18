@@ -5,6 +5,15 @@ Expense-Tracker is a simple web application that helps users track their expense
 
 ---
 
+# Expense-Tracker Database Diagram
+
+![Expense-Tracker](https://github.com/user-attachments/assets/f7dab56b-e624-4d1a-8fe9-b235ea0791e2)
+
+## Purpose
+
+The Expense-Tracker database diagram visually represents the structure of the database used in the Expense-Tracker application. It outlines the relationships between different entities, such as users, expenses, incomes, and budgets. This diagram serves as a reference for developers and database administrators to understand the data model and facilitate effective database management and development
+
+
 ## Table of Contents
 
 - [Features](#features)
@@ -68,7 +77,6 @@ Before you begin, ensure you have the following installed on your system:
 git clone https://github.com/your-username/expense-tracker.git
 cd expense-tracker
 ```
-![Expense-Tracker ](https://github.com/user-attachments/assets/f7dab56b-e624-4d1a-8fe9-b235ea0791e2)
 
 ## Set Up PostgreSQL:
 Ensure that PostgreSQL is installed and running on your system. Create a database named Expense_Tracker.
@@ -138,6 +146,37 @@ docker run --name expense-tracker --link postgres -p 8081:8081 -d expense-tracke
 
 ```
 
+## Database Configuration
+
+The app uses PostgreSQL as the database and Hibernate for ORM. Database schema is managed automatically by Hibernate with the following settings:
+
+- **DDL-Auto**: update (automatically updates the schema based on entity classes)
+- **Dialect**: PostgreSQLDialect (automatically detects dialect for PostgreSQL)
+
+
+
+## API Endpoints
+
+### Authentication
+- **POST /auth/register**: Register a new user.
+- **POST /auth/login**: Log in and receive a JWT token.
+
+### Expense Management
+- **GET /expenses**: List all expenses for the logged-in user.
+- **POST /expenses**: Add a new expense.
+- **PUT /expenses/{id}**: Update an existing expense.
+- **DELETE /expenses/{id}**: Delete an expense.
+
+### Income Management
+- **GET /income**: List all incomes for the logged-in user.
+- **POST /income**: Add new income.
+
+### Budgeting
+- **POST /budget**: Set a budget for a specific category.
+- **GET /budget/{month}**: View monthly budget details.
+
+
+
 ## Swagger Documentation
 Swagger UI is integrated for exploring the APIs. You can access it at:
 
@@ -157,5 +196,10 @@ We welcome contributions! To contribute:
 4. **Push to the branch:**
 ```bash git push origin feature-branch
 ```
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
 5. **Open a pull request.**
    Please ensure your code follows the project standards and includes relevant tests.
