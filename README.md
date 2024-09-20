@@ -7,7 +7,9 @@ Expense-Tracker is a simple web application that helps users track their expense
 
 # Expense-Tracker Database Diagram
 
-![Expense-Tracker](https://github.com/user-attachments/assets/f7dab56b-e624-4d1a-8fe9-b235ea0791e2)
+![Untitled (2)](https://github.com/user-attachments/assets/830dc45e-fd6f-4dc3-badd-7f08104d0a4f)
+
+
 
 ## Purpose
 
@@ -74,7 +76,7 @@ Before you begin, ensure you have the following installed on your system:
 ### 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/expense-tracker.git
+git clone https://github.com/wastech/Expense-Tracker.git
 cd expense-tracker
 ```
 
