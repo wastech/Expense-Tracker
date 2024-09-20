@@ -7,7 +7,8 @@ Expense-Tracker is a simple web application that helps users track their expense
 
 # Expense-Tracker Database Diagram
 
-![Expense-Tracker](https://github.com/user-attachments/assets/f7dab56b-e624-4d1a-8fe9-b235ea0791e2)
+![Untitled (1)](https://github.com/user-attachments/assets/ddf469bc-ee9c-4c99-bd98-a076a2dfce53)
+
 
 ## Purpose
 
