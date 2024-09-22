@@ -39,6 +39,8 @@ public class BudgetServiceImpl implements BudgetService {
 
     @Override
     public BudgetDTO createBudget(BudgetDTO budgetDTO, User user) {
+        System.out.println("budgetDTO"+ budgetDTO);
+
         Budget budget = modelMapper.map(budgetDTO, Budget.class);
         budget.setUser(user);
 

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/budgets")
+@RequestMapping("/")
 public class BudgetController {
     @Autowired
     AuthUtil authUtil;
@@ -26,9 +26,10 @@ public class BudgetController {
     @Autowired
     private ExpenseService expenseService;
 
-    @PostMapping
-    public BudgetDTO createBudget(@RequestBody BudgetDTO budgetDTO, @RequestParam Long userId) {
+    @PostMapping("/budgets")
+    public BudgetDTO createBudget(@RequestBody BudgetDTO budgetDTO) {
         User user = authUtil.loggedInUser();
+        System.out.println("user" +user);
         return budgetService.createBudget(budgetDTO, user);
     }
 

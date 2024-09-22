@@ -11,6 +11,7 @@ import com.wastech.Expense_Tracker.security.request.SignupRequest;
 import com.wastech.Expense_Tracker.security.response.MessageResponse;
 import com.wastech.Expense_Tracker.security.response.UserInfoResponse;
 import com.wastech.Expense_Tracker.security.services.UserDetailsImpl;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Tag(name = "User", description = "Operations related to user management")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {

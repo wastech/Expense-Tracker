@@ -21,13 +21,13 @@ public class IncomeController {
     @Autowired
     IncomeService incomeService;
     @PostMapping("/incomes")
-    public ResponseEntity<IncomeDTO> createAddress(@Valid @RequestBody IncomeDTO incomeDTO) {
+    public ResponseEntity<IncomeDTO> createIncome(@Valid @RequestBody IncomeDTO incomeDTO) {
         User user = authUtil.loggedInUser();
         IncomeDTO savedIncomeDTO = incomeService.createIncome(incomeDTO, user);
         return new ResponseEntity<>(savedIncomeDTO, HttpStatus.CREATED);
     }
     @GetMapping("/incomes")
-    public ResponseEntity<List<IncomeDTO>> getAddresses() {
+    public ResponseEntity<List<IncomeDTO>> getIncome() {
         List<IncomeDTO> incomeList = incomeService.getAllIncomes();
         return new ResponseEntity<>(incomeList, HttpStatus.OK);
     }
