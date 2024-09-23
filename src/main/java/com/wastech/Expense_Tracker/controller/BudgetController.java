@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api")
 public class BudgetController {
     @Autowired
     AuthUtil authUtil;
@@ -27,9 +27,9 @@ public class BudgetController {
     private ExpenseService expenseService;
 
     @PostMapping("/budgets")
-    public BudgetDTO createBudget(@RequestBody BudgetDTO budgetDTO) {
+    public BudgetDTO createBudget(@RequestBody BudgetDTO budgetDTO, Long userId) {
         User user = authUtil.loggedInUser();
-        System.out.println("user" +user);
+        System.out.println("<======user=====>" +user);
         return budgetService.createBudget(budgetDTO, user);
     }
 
@@ -60,7 +60,7 @@ public class BudgetController {
         return budgetService.updateBudgetById(id, budgetDTO);
     }
 
-    @GetMapping("/monthly-category-expenses")
+    @GetMapping("/b/monthly-category-expenses")
     public ResponseEntity<Map<String, Object>> getMonthlyCategoryExpensesWithBudget(
         @AuthenticationPrincipal User user,
         @RequestParam int year,
