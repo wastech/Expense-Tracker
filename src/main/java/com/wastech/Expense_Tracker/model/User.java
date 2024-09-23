@@ -48,6 +48,7 @@ public class User {
         this.password = password;
     }
 
+    @ToString.Exclude
     @Setter
     @Getter
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE},
@@ -58,16 +59,19 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
 
+    @ToString.Exclude
     @Setter
     @Getter
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Expense> expenses = new HashSet<>();
 
+    @ToString.Exclude
     @Setter
     @Getter
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Income> incomes = new ArrayList<>();
 
+    @ToString.Exclude
     @Setter
     @Getter
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

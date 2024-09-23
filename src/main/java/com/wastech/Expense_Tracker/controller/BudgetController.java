@@ -33,34 +33,34 @@ public class BudgetController {
         return budgetService.createBudget(budgetDTO, user);
     }
 
-    @GetMapping
+    @GetMapping("/budgets")
     public List<BudgetDTO> getBudgets() {
         return budgetService.getBudgets();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/budgets/{id}")
     public BudgetDTO getBudgetById(@PathVariable Long id) {
         return budgetService.getBudgetById(id);
     }
 
-    @GetMapping("/user/{userId}")
+    @GetMapping("/budgets/user/{userId}")
     public List<BudgetDTO> getUserBudgets(@PathVariable Long userId) {
         User user = authUtil.loggedInUser();
         return budgetService.getUserBudgets(user);
     }
 
-    @GetMapping("/user/{userId}/category/{categoryId}")
+    @GetMapping("/budgets/user/{userId}/category/{categoryId}")
     public List<BudgetDTO> getBudgetsByUserAndCategory(@PathVariable Long userId, @PathVariable Long categoryId) {
         User user = authUtil.loggedInUser();
         return budgetService.getBudgetsByUserAndCategory(user, categoryId);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/budgets/{id}")
     public BudgetDTO updateBudgetById(@PathVariable Long id, @RequestBody BudgetDTO budgetDTO) {
         return budgetService.updateBudgetById(id, budgetDTO);
     }
 
-    @GetMapping("/b/monthly-category-expenses")
+    @GetMapping("/budgets/monthly-category-expenses")
     public ResponseEntity<Map<String, Object>> getMonthlyCategoryExpensesWithBudget(
         @AuthenticationPrincipal User user,
         @RequestParam int year,
@@ -71,7 +71,7 @@ public class BudgetController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/budgets/{id}")
     public String deleteBudgetById(@PathVariable Long id) {
         return budgetService.deleteBudgetById(id);
     }
