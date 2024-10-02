@@ -180,7 +180,7 @@ The app uses PostgreSQL as the database and Hibernate for ORM. Database schema i
 
 
 ## Swagger Documentation
-Swagger UI is integrated for exploring the APIs. You can access it at:
+Swagger UI is integrated for exploring the APIs. You can access it at: http://localhost:8081/swagger-ui/index.html
 
 
 
