@@ -5,7 +5,7 @@ services:
     image: postgres:14
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: WASiu369
+      POSTGRES_PASSWORD: 55555
       POSTGRES_DB: Expense_Tracker
     ports:
       - "5432:5432"
@@ -17,7 +17,7 @@ services:
     environment:
       DATASOURCE_URL: jdbc:postgresql://database:5432/Expense_Tracker
       DATASOURCE_USERNAME: postgres
-      DATASOURCE_PASSWORD: WASiu369
+      DATASOURCE_PASSWORD: 55555
       JWT_SECRET: mySecretKey123912738aopsgjnspkmndfsopkvajoirjg94gf2opfng2moknm
     depends_on:
       - database
